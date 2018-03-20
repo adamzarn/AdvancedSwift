@@ -31,7 +31,7 @@ struct PrefixSequence: Sequence {
 }
 
 for prefix in PrefixSequence(string: "Hello") {
-    print(prefix) //H, He, Hel, Hell, Hello
+    prefix //H, He, Hel, Hell, Hello
 }
 
 //print(PrefixSequence(string: "Hello").map { $0.uppercased() }) ["H", "HE", "HEL", "HELL", "HELLO"]
@@ -53,5 +53,13 @@ struct FibonacciSequence: Sequence {
         return FibonacciIterator()
     }
 }
+
+//Subsequences
+let fibs = FibonacciSequence().prefix(10)
+for i in fibs.prefix(5) { i } //0,1,1,2,3
+for i in fibs.suffix(5) { i } //5,8,13,21,34
+for i in fibs.dropFirst(9) { i } //34
+for i in fibs.dropLast(9) { i } //0
+for i in fibs.split(separator: 5) { i } //[[0,1,1,2,3],[8,13,21,34]]
 
 
