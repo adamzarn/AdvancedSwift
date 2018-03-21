@@ -87,5 +87,66 @@ extension List: ExpressibleByArrayLiteral {
 }
 let list2: List = [3,2,1]
 
+//Queue (example of custom collection)
+protocol Queue {
+    associatedtype Element
+    mutating func enqueue(_ newElement: Element)
+    mutating func dequeue() -> Element?
+}
+
+struct FIFOQueue<Element>: Queue {
+    private var left: [Element] = []
+    private var right: [Element] = []
+    /// Add an element to the back of the queue.
+    mutating func enqueue(_ newElement: Element) {
+        right.append(newElement)
+    }
+    /// Removes front of the queue.
+    /// Returns `nil` in case of an empty queue.
+    /// Complexity: Amortized O(1).
+    mutating func dequeue() -> Element? {
+        if left.isEmpty {
+            left = right.reversed()
+            right.removeAll()
+        }
+        return left.popLast()
+    }
+}
+
+var line = FIFOQueue<Int>()
+line.enqueue(1)
+line.enqueue(2)
+
+//Queue: Collection Conformance
+extension FIFOQueue: Collection {
+    public var startIndex: Int { return 0 }
+    public var endIndex: Int { return left.count + right.count }
+    public func index(after i: Int) -> Int {
+        precondition(i < endIndex)
+        return i + 1
+    }
+    public subscript(position: Int) -> Element {
+        precondition((0..<endIndex).contains(position), "Index out of bounds")
+        if position < left.endIndex {
+            return left[left.count - position - 1]
+        } else {
+            return right[position - left.count]
+        }
+    }
+}
+
+line.count
+
+//Queue: ExpressibleByArrayLiteral Conformance
+extension FIFOQueue: ExpressibleByArrayLiteral {
+    public init(arrayLiteral elements: Element...) {
+        left = elements.reversed()
+        right = []
+    }
+}
+
+var queueFromArray: FIFOQueue<String> = ["Mercury", "Venus", "Earth", "Mars"]
+queueFromArray.dequeue()
+queueFromArray.count
 
 
