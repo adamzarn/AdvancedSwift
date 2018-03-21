@@ -62,4 +62,30 @@ for i in fibs.dropFirst(9) { i } //34
 for i in fibs.dropLast(9) { i } //0
 for i in fibs.split(separator: 5) { i } //[[0,1,1,2,3],[8,13,21,34]]
 
+//Singly Linked List (example of custom sequence)
+enum List<Element> {
+    case end
+    indirect case node(Element, next: List<Element>) //Reference Type
+}
+
+let emptyList = List<Int>.end
+let oneElementList = List.node(1, next: emptyList)
+
+extension List {
+    func cons(_ x: Element) -> List {
+        return .node(x, next: self)
+    }
+}
+let list = List<Int>.end.cons(1).cons(2).cons(3)
+
+extension List: ExpressibleByArrayLiteral {
+    init(arrayLiteral elements: Element...) {
+        self = elements.reversed().reduce(.end) { partialList, element in
+            partialList.cons(element)
+        }
+    }
+}
+let list2: List = [3,2,1]
+
+
 
